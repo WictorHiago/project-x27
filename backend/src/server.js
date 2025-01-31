@@ -13,7 +13,11 @@ const warehouseRoutes = require('./routes/warehouseRoutes');
 const app = express();
 
 // Configurações
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(morgan('combined'));
 
@@ -57,15 +61,26 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/warehouses', warehouseRoutes);
 
-// Error handling middleware
+// Middleware de erro personalizado
 app.use((err, req, res, next) => {
-  logger.error('Error:', {
-    message: err.message,
-    stack: err.stack,
+  logger.error('Error:', { 
     method: req.method,
-    url: req.url
+    url: req.url,
+    error: err.message,
+    stack: err.stack 
   });
-  res.status(500).json({ error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message });
+
+  // Se for um erro conhecido (lançado por nós), retorna a mensagem
+  if (err.message === 'Categoria não encontrada') {
+    return res.status(400).json({ 
+      error: err.message 
+    });
+  }
+
+  // Para outros erros, retorna uma mensagem genérica
+  res.status(500).json({ 
+    error: 'Ocorreu um erro ao processar sua requisição' 
+  });
 });
 
 // Rota 404 para endpoints não encontrados

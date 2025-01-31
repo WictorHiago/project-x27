@@ -1,9 +1,13 @@
 const Product = require('../models/Product');
 
 class ProductController {
+    constructor() {
+        this.productModel = new Product();
+    }
+
     async getAllProducts() {
         try {
-            const products = await Product.getAll();
+            const products = await this.productModel.getAll();
             return products;
         } catch (error) {
             throw error;
@@ -12,7 +16,7 @@ class ProductController {
 
     async getProductById(id) {
         try {
-            const product = await Product.getById(id);
+            const product = await this.productModel.getById(id);
             return product;
         } catch (error) {
             throw error;
@@ -21,7 +25,7 @@ class ProductController {
 
     async getProductsByCategory(categoryId) {
         try {
-            const products = await Product.getByCategoryId(categoryId);
+            const products = await this.productModel.getByCategoryId(categoryId);
             return products;
         } catch (error) {
             throw error;
@@ -30,7 +34,7 @@ class ProductController {
 
     async createProduct(data) {
         try {
-            const product = await Product.create(data);
+            const product = await this.productModel.create(data);
             return product;
         } catch (error) {
             throw error;
@@ -39,7 +43,7 @@ class ProductController {
 
     async updateProduct(id, data) {
         try {
-            const product = await Product.update(id, data);
+            const product = await this.productModel.update(id, data);
             return product;
         } catch (error) {
             throw error;
@@ -48,7 +52,7 @@ class ProductController {
 
     async deleteProduct(id) {
         try {
-            return await Product.delete(id);
+            return await this.productModel.delete(id);
         } catch (error) {
             throw error;
         }

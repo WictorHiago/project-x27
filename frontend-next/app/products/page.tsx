@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface Product {
   id: string;
@@ -21,6 +22,7 @@ interface Category {
 }
 
 export default function ProductsPage() {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,10 +40,13 @@ export default function ProductsPage() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/products');
+      const response = await fetch('http://localhost:3000/api/products', {
+        cache: 'no-store' // Desabilita o cache para sempre buscar dados frescos
+      });
       if (!response.ok) throw new Error('Failed to fetch products');
       const data = await response.json();
       setProducts(Array.isArray(data) ? data : []);
+      setLoading(false);
     } catch (err) {
       throw err;
     }
@@ -49,14 +54,14 @@ export default function ProductsPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/categories');
+      const response = await fetch('http://localhost:3000/api/categories', {
+        cache: 'no-store' // Desabilita o cache para sempre buscar dados frescos
+      });
       if (!response.ok) throw new Error('Failed to fetch categories');
       const data = await response.json();
       setCategories(Array.isArray(data) ? data : []);
     } catch (err) {
       throw err;
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -70,7 +75,8 @@ export default function ProductsPage() {
       
       if (!response.ok) throw new Error('Failed to delete product');
       
-      setProducts(products.filter(product => product.id !== id));
+      // Atualiza a lista de produtos após deletar
+      await fetchProducts();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error deleting product');
     }
@@ -81,7 +87,7 @@ export default function ProductsPage() {
   };
 
   const formatPrice = (price: number) => {
-    return typeof price === 'number' ? price.toFixed(2) : '0.00';
+    return typeof price === 'number' ? `$${price.toFixed(2)}` : '$0.00';
   };
 
   const formatDate = (date: string | undefined) => {
@@ -102,7 +108,7 @@ export default function ProductsPage() {
         <h1 className="text-2xl font-bold">Products</h1>
         <Link 
           href="/products/new" 
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           Add Product
         </Link>
@@ -111,50 +117,39 @@ export default function ProductsPage() {
       <div className="bg-white rounded-lg shadow overflow-x-auto">
         <table className="min-w-full">
           <thead>
-            <tr className="border-b">
-              <th className="px-6 py-3 text-left">Name</th>
-              <th className="px-6 py-3 text-left">Category</th>
-              <th className="px-6 py-3 text-right">Quantity</th>
-              <th className="px-6 py-3 text-right">Price</th>
-              <th className="px-6 py-3 text-left">Entry Date</th>
-              <th className="px-6 py-3 text-right">Actions</th>
+            <tr className="bg-gray-50">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Entry Date</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="bg-white divide-y divide-gray-200">
             {products.map((product) => (
-              <tr key={product.id} className="border-b hover:bg-gray-50">
-                <td className="px-6 py-4">{product.name || '-'}</td>
-                <td className="px-6 py-4">{getCategoryName(product.categoryId)}</td>
-                <td className="px-6 py-4 text-right">{product.quantity || 0}</td>
-                <td className="px-6 py-4 text-right">
-                  ${formatPrice(product.price)}
-                </td>
-                <td className="px-6 py-4">
-                  {formatDate(product.entryDate)}
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <Link
+              <tr key={product.id}>
+                <td className="px-6 py-4 whitespace-nowrap">{product.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{getCategoryName(product.categoryId)}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{product.quantity}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{formatPrice(product.price)}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{formatDate(product.entryDate)}</td>
+                <td className="px-6 py-4 whitespace-nowrap space-x-2">
+                  <Link 
                     href={`/products/${product.id}`}
-                    className="text-blue-500 hover:text-blue-700 mr-4"
+                    className="text-blue-600 hover:text-blue-900"
                   >
                     Edit
                   </Link>
                   <button
                     onClick={() => handleDelete(product.id)}
-                    className="text-red-500 hover:text-red-700"
+                    className="text-red-600 hover:text-red-900 ml-4"
                   >
                     Delete
                   </button>
                 </td>
               </tr>
             ))}
-            {(!products || products.length === 0) && (
-              <tr>
-                <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
-                  No products found
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
       </div>

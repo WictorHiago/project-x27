@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const Category = require('./Category');
+const CategoryModel = require('./Category');
 
 class Product {
     constructor() {
@@ -34,7 +34,7 @@ class Product {
             const products = this.getAll();
             
             // Verificar se a categoria existe
-            const category = new Category().getById(productData.categoryId);
+            const category = CategoryModel.getById(productData.categoryId);
             if (!category) {
                 throw new Error('Categoria não encontrada');
             }
@@ -42,11 +42,12 @@ class Product {
             const newProduct = {
                 id: Date.now().toString(),
                 name: productData.name,
+                description: productData.description,
                 quantity: parseInt(productData.quantity) || 0,
                 price: parseFloat(productData.price) || 0,
                 categoryId: productData.categoryId,
-                entryDate: productData.entryDate || new Date().toISOString(),
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             };
             
             products.push(newProduct);
@@ -66,7 +67,7 @@ class Product {
 
             // Se estiver atualizando a categoria, verificar se existe
             if (productData.categoryId) {
-                const category = new Category().getById(productData.categoryId);
+                const category = CategoryModel.getById(productData.categoryId);
                 if (!category) {
                     throw new Error('Categoria não encontrada');
                 }
@@ -93,16 +94,18 @@ class Product {
             const products = this.getAll();
             const filteredProducts = products.filter(prod => prod.id !== id);
             
-            if (filteredProducts.length === products.length) return false;
+            if (filteredProducts.length === products.length) {
+                return false;
+            }
             
             fs.writeFileSync(this.dbPath, JSON.stringify({ data: filteredProducts }));
             return true;
         } catch (error) {
-            return false;
+            throw error;
         }
     }
 
-    getByCategory(categoryId) {
+    getByCategoryId(categoryId) {
         try {
             const products = this.getAll();
             return products.filter(prod => prod.categoryId === categoryId);
@@ -112,4 +115,4 @@ class Product {
     }
 }
 
-module.exports = new Product();
+module.exports = Product;

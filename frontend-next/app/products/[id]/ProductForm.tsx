@@ -60,6 +60,7 @@ export default function ProductForm({ id }: ProductFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     
     try {
       const url = isNew 
@@ -74,9 +75,14 @@ export default function ProductForm({ id }: ProductFormProps) {
         body: JSON.stringify(product),
       });
 
-      if (!response.ok) throw new Error('Failed to save product');
+      const data = await response.json();
       
-      router.push('/products');
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to save product');
+      }
+      
+      // Se chegou aqui, o produto foi salvo com sucesso
+      window.location.href = '/products';
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error saving product');
     }
