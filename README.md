@@ -1,4 +1,10 @@
 # Project X27 - Sistema de Gerenciamento de Inventário
+
+<div align="center">
+  <img src="assets/logo.png" alt="Project X27 Logo" width="200"/>
+  <p><i>Sistema moderno de gerenciamento de inventário</i></p>
+</div>
+
 ### Autor: Wictor Hiago Souza | Fullstack Engineer
 ### E-mail: wictor.backup@gmail.com
 ### LinkedIn: https://www.linkedin.com/in/dev-wictor-hiago
@@ -7,6 +13,19 @@
 # Informações Gerais
 
 Este é um sistema de gerenciamento de inventário construído com Next.js no frontend e Node.js/Express no backend.
+
+## 📸 Screenshots
+
+<div align="center">
+  <p><strong>Lista de Produtos</strong></p>
+  <img src="https://github.com/WictorHiago/project-x27/blob/main/assets/Captura%20de%20tela%20de%202025-01-31%2015-42-43.png" alt="Lista de Produtos" width="800"/>
+  
+  <p><strong>Formulário de Cadastro</strong></p>
+  <img src="https://github.com/WictorHiago/project-x27/blob/main/assets/Captura%20de%20tela%20de%202025-01-31%2015-45-06.png" alt="Formulário de Cadastro" width="800"/>
+  
+  <p><strong>Gestão de Categorias</strong></p>
+  <img src="https://github.com/WictorHiago/project-x27/blob/main/assets/Captura%20de%20tela%20de%202025-01-31%2015-49-39.png" alt="Gestão de Categorias" width="800"/>
+</div>
 
 ## 🚀 Tecnologias
 
@@ -406,3 +425,22 @@ Este projeto está sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para d
 O arquivo de licença está disponível em inglês e português.
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 The license file is available in both English and Portuguese.
+
+<div align="center">
+  <p><strong>Tecnologias Utilizadas</strong></p>
+  <p>
+    <img src="https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js"/>
+    <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"/>
+    <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"/>
+    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind"/>
+    <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"/>
+    <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js"/>
+    <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" alt="Docker"/>
+  </p>
+</div>
+
+---
+
+<div align="center">
+  <p>Desenvolvido com ❤️ por <a href="https://github.com/WictorHiago">Wictor Hiago</a></p>
+</div>
