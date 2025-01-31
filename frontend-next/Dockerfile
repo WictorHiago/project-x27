@@ -20,5 +20,8 @@ RUN npm run build
 # Expor porta
 EXPOSE 3001
 
-# Comando para iniciar a aplicação em produção
+# Definir variável de ambiente para a porta
+ENV PORT=3001
+
+# Comando para iniciar a aplicação
 CMD ["npm", "start"]

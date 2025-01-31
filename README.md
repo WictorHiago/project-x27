@@ -10,17 +10,18 @@ Este é um sistema de gerenciamento de inventário construído com Next.js no fr
 
 ## 🚀 Tecnologias
 
-- Frontend:
-  - Next.js 15.1.6
-  - TypeScript
-  - Tailwind CSS
-  - Docker
+### Frontend
+- Next.js 15.1.6
+- TypeScript
+- Tailwind CSS
+- React 19
+- Docker
 
-- Backend:
-  - Node.js
-  - Express
-  - Winston (logging)
-  - Docker
+### Backend
+- Node.js 20
+- Express
+- Winston (logging)
+- Docker
 
 ## 🛠️ Requisitos
 
@@ -44,36 +45,60 @@ Crie os diretórios necessários para os logs:
 mkdir -p logs/frontend logs/backend
 ```
 
-### 2. Configuração
+### 2. Portas e Endpoints
 
-O projeto usa as seguintes portas por padrão:
-- Frontend: 3001
-- Backend: 3000
+O projeto utiliza as seguintes portas:
+- Frontend: http://localhost:3001
+- Backend: http://localhost:3000
 
-Se necessário, você pode alterar estas portas no arquivo `docker-compose.yml`.
+Endpoints principais:
+- Frontend UI: http://localhost:3001
+- Backend API: http://localhost:3000/api
+  - Produtos: http://localhost:3000/api/products
+  - Categorias: http://localhost:3000/api/categories
+  - Armazéns: http://localhost:3000/api/warehouses
 
 ### 3. Construindo e Iniciando os Containers
 
-Para construir e iniciar todos os serviços:
+Para construir e iniciar todos os serviços com logs em tempo real:
 ```bash
-docker-compose up --build
+sudo docker-compose up --build
 ```
 
 Para rodar em background:
 ```bash
-docker-compose up -d --build
+sudo docker-compose up -d --build
 ```
 
-### 4. Parando os Containers
+### 4. Monitoramento e Logs
+
+Verificar status dos containers:
+```bash
+sudo docker-compose ps
+```
+
+Visualizar logs:
+```bash
+# Todos os logs em tempo real
+sudo docker-compose logs -f
+
+# Apenas logs do frontend
+sudo docker-compose logs frontend
+
+# Apenas logs do backend
+sudo docker-compose logs backend
+```
+
+### 5. Parando os Containers
 
 Para parar os serviços:
 ```bash
-docker-compose down
+sudo docker-compose down
 ```
 
 Para parar e remover volumes:
 ```bash
-docker-compose down -v
+sudo docker-compose down -v
 ```
 
 ## 📁 Estrutura do Docker
@@ -99,17 +124,7 @@ O projeto utiliza três tipos de volumes:
 - Tipo: bridge
 - Uso: Comunicação entre containers frontend e backend
 
-## 📝 Logs
-
-### Localização dos Logs
-
-Os logs são salvos em dois lugares:
-1. Dentro dos containers em `/usr/src/app/logs`
-2. No host em:
-   - `./logs/frontend/`
-   - `./logs/backend/`
-
-### Estrutura dos Logs
+## 📝 Estrutura de Logs
 
 ```
 logs/
@@ -121,72 +136,261 @@ logs/
     └── error.log     # Apenas erros
 ```
 
-### Visualizando Logs
+## 📚 Documentação da API
 
-Logs dos containers:
-```bash
-# Logs do frontend
-docker-compose logs frontend
+Base URL: `http://localhost:3000/api`
 
-# Logs do backend
-docker-compose logs backend
+### 🏷️ Produtos
 
-# Logs em tempo real
-docker-compose logs -f
+#### Listar todos os produtos
+```http
+GET /products
+```
+**Resposta**
+```json
+[
+  {
+    "id": "string",
+    "name": "string",
+    "description": "string",
+    "price": "number",
+    "quantity": "number",
+    "categoryId": "string",
+    "createdAt": "string",
+    "updatedAt": "string"
+  }
+]
 ```
 
-Logs do sistema de arquivos:
-```bash
-# Frontend
-tail -f logs/frontend/combined.log
+#### Obter produto por ID
+```http
+GET /products/{id}
+```
+**Resposta**: Objeto do produto ou 404 se não encontrado
 
-# Backend
-tail -f logs/backend/combined.log
+#### Criar novo produto
+```http
+POST /products
+```
+**Body**
+```json
+{
+  "name": "string",
+  "description": "string",
+  "price": "number",
+  "quantity": "number",
+  "categoryId": "string"
+}
+```
+**Resposta**: Objeto do produto criado
+
+#### Atualizar produto
+```http
+PUT /products/{id}
+```
+**Body**
+```json
+{
+  "name": "string",
+  "description": "string",
+  "price": "number",
+  "quantity": "number",
+  "categoryId": "string"
+}
+```
+**Resposta**: Objeto do produto atualizado ou 404 se não encontrado
+
+#### Deletar produto
+```http
+DELETE /products/{id}
+```
+**Resposta**: 204 No Content ou 404 se não encontrado
+
+#### Listar produtos por categoria
+```http
+GET /products/category/{categoryId}
+```
+**Resposta**: Array de produtos da categoria
+
+### 📁 Categorias
+
+#### Listar todas as categorias
+```http
+GET /categories
+```
+**Resposta**
+```json
+[
+  {
+    "id": "string",
+    "name": "string",
+    "description": "string",
+    "createdAt": "string",
+    "updatedAt": "string"
+  }
+]
 ```
 
-## 🔧 Manutenção
+#### Obter categoria por ID
+```http
+GET /categories/{id}
+```
+**Resposta**: Objeto da categoria ou 404 se não encontrada
 
-### Reconstruindo Containers
+#### Criar nova categoria
+```http
+POST /categories
+```
+**Body**
+```json
+{
+  "name": "string",
+  "description": "string"
+}
+```
+**Resposta**: Objeto da categoria criada
 
-Se você fizer alterações nos Dockerfiles:
-```bash
-docker-compose up --build
+#### Atualizar categoria
+```http
+PUT /categories/{id}
+```
+**Body**
+```json
+{
+  "name": "string",
+  "description": "string"
+}
+```
+**Resposta**: Objeto da categoria atualizada ou 404 se não encontrada
+
+#### Deletar categoria
+```http
+DELETE /categories/{id}
+```
+**Resposta**: 204 No Content ou 404 se não encontrada
+
+### 🏭 Armazéns
+
+#### Listar todos os armazéns
+```http
+GET /warehouses
+```
+**Resposta**
+```json
+[
+  {
+    "id": "string",
+    "name": "string",
+    "address": "string",
+    "capacity": "number",
+    "createdAt": "string",
+    "updatedAt": "string"
+  }
+]
 ```
 
-### Limpeza
+#### Obter armazém por ID
+```http
+GET /warehouses/{id}
+```
+**Resposta**: Objeto do armazém ou 404 se não encontrado
 
-Remover containers parados:
-```bash
-docker-compose rm
+#### Criar novo armazém
+```http
+POST /warehouses
+```
+**Body**
+```json
+{
+  "name": "string",
+  "address": "string",
+  "capacity": "number"
+}
+```
+**Resposta**: Objeto do armazém criado
+
+#### Atualizar armazém
+```http
+PUT /warehouses/{id}
+```
+**Body**
+```json
+{
+  "name": "string",
+  "address": "string",
+  "capacity": "number"
+}
+```
+**Resposta**: Objeto do armazém atualizado ou 404 se não encontrado
+
+#### Deletar armazém
+```http
+DELETE /warehouses/{id}
+```
+**Resposta**: 204 No Content ou 404 se não encontrado
+
+### Códigos de Status
+
+| Código | Descrição |
+|--------|-----------|
+| 200 | Sucesso |
+| 201 | Criado com sucesso |
+| 204 | Sem conteúdo |
+| 400 | Requisição inválida |
+| 404 | Não encontrado |
+| 500 | Erro interno do servidor |
+
+### Observações
+
+1. Todas as datas são retornadas no formato ISO 8601
+2. Todos os IDs são strings únicas
+3. Os endpoints retornam erro 400 para dados inválidos
+4. Autenticação será implementada em versões futuras
+
+## 🔧 Desenvolvimento
+
+### Estrutura do Projeto
+```
+project-x27/
+├── frontend-next/
+│   ├── app/          # Páginas e componentes Next.js
+│   ├── public/       # Arquivos estáticos
+│   ├── .dockerignore # Arquivos ignorados no build Docker
+│   └── Dockerfile    # Configuração Docker do frontend
+├── backend/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   └── server.js
+│   ├── .dockerignore # Arquivos ignorados no build Docker
+│   └── Dockerfile    # Configuração Docker do backend
+├── logs/             # Diretório de logs
+├── .gitignore       # Arquivos ignorados pelo Git
+├── .dockerignore    # Arquivos ignorados no build Docker
+└── docker-compose.yml
 ```
 
-Remover imagens não utilizadas:
-```bash
-docker image prune
-```
+### Arquivos de Configuração
 
-## 🚨 Troubleshooting
+#### .gitignore
+Arquivo na raiz do projeto que especifica quais arquivos e diretórios devem ser ignorados pelo Git:
+- `node_modules/`: Dependências do Node.js
+- `logs/`: Arquivos de log
+- `.env`: Arquivos de variáveis de ambiente
+- `.next/`: Build do Next.js
+- Outros arquivos temporários e de IDE
 
-1. **Portas em uso**
-   - Erro: "port is already allocated"
-   - Solução: Verifique se as portas 3000 e 3001 estão livres
-   ```bash
-   sudo lsof -i :3000
-   sudo lsof -i :3001
-   ```
+#### .dockerignore
+Arquivo na raiz do projeto que especifica quais arquivos não devem ser copiados durante o build Docker:
+- Arquivos de controle de versão (`.git/`)
+- Dependências (`node_modules/`)
+- Arquivos de ambiente (`.env`)
+- Arquivos de log
+- Arquivos de configuração de desenvolvimento
+- Documentação e arquivos não necessários em produção
 
-2. **Problemas de permissão nos logs**
-   - Erro: "permission denied" ao escrever logs
-   - Solução: Ajuste as permissões dos diretórios de log
-   ```bash
-   chmod -R 777 logs
-   ```
-
-3. **Container não inicia**
-   - Verifique os logs do container:
-   ```bash
-   docker-compose logs [service_name]
-   ```
+Cada subprojeto (frontend e backend) também possui seu próprio `.dockerignore` para controle mais granular.
 
 ## 👥 Contribuindo
 

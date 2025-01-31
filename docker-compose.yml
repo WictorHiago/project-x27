@@ -9,7 +9,7 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - frontend-logs:/usr/src/app/logs
+      - ./logs/frontend:/usr/src/app/logs
       - ./frontend-next:/usr/src/app
       - /usr/src/app/node_modules
       - /usr/src/app/.next
@@ -34,7 +34,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - backend-logs:/usr/src/app/logs
+      - ./logs/backend:/usr/src/app/logs
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
     environment:
@@ -51,17 +51,3 @@ services:
 networks:
   project-x27-network:
     driver: bridge
-
-volumes:
-  frontend-logs:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${PWD}/logs/frontend
-  backend-logs:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${PWD}/logs/backend
