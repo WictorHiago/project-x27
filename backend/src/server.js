@@ -3,6 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 const fs = require('fs');
+const logger = require('./config/logger');
 
 // Importação das rotas
 const categoryRoutes = require('./routes/categoryRoutes');
@@ -18,6 +19,17 @@ app.use(morgan('combined'));
 
 // Middleware para processar dados de formulários
 app.use(express.urlencoded({ extended: true }));
+
+// Logging middleware
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.url}`, {
+    method: req.method,
+    url: req.url,
+    ip: req.ip,
+    userAgent: req.get('user-agent')
+  });
+  next();
+});
 
 // Criação do diretório de logs se não existir
 const logsDir = path.join(__dirname, 'logs');
@@ -45,14 +57,15 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/warehouses', warehouseRoutes);
 
-// Middleware de tratamento de erros
+// Error handling middleware
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ 
-        error: process.env.NODE_ENV === 'production' 
-            ? 'Internal server error' 
-            : err.message 
-    });
+  logger.error('Error:', {
+    message: err.message,
+    stack: err.stack,
+    method: req.method,
+    url: req.url
+  });
+  res.status(500).json({ error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message });
 });
 
 // Rota 404 para endpoints não encontrados
@@ -60,7 +73,13 @@ app.use((req, res) => {
     res.status(404).json({ error: 'Endpoint not found' });
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  logger.info('Health check requested');
+  res.json({ status: 'ok' });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`API running on port ${PORT}`);
+  logger.info(`API running on port ${PORT}`);
 });
