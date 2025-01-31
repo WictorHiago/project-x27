@@ -402,4 +402,7 @@ Cada subprojeto (frontend e backend) também possui seu próprio `.dockerignore`
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+O arquivo de licença está disponível em inglês e português.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+The license file is available in both English and Portuguese.
