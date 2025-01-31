@@ -1,4 +1,10 @@
 # Project X27 - Sistema de Gerenciamento de Inventário
+### Autor: Wictor Hiago Souza | Fullstack Engineer
+### E-mail: wictor.backup@gmail.com
+### LinkedIn: https://www.linkedin.com/in/dev-wictor-hiago
+### Site: https://wictordev.vercel.app
+
+# Informações Gerais
 
 Este é um sistema de gerenciamento de inventário construído com Next.js no frontend e Node.js/Express no backend.
 
